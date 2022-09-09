@@ -25,7 +25,9 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "src/assets/js/tiff.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -92,10 +94,15 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "src/assets/js/tiff.js"
+            ]
           }
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "50272426-b267-405c-a2b4-3bed2b989aa8"
   }
 }

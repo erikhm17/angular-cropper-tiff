@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Cropper.js</title>
+  <link rel="stylesheet" href="../css/cropper.css">
+  <style>
+    .container {
+      margin: 20px auto;
+      max-width: 640px;
+    }
+
+    /*img {*/
+    /*  max-width: 100%;*/
+    /*}*/
+  </style>
+</head>
+<body>
+<div class="container">
+  <button type="button" id="button">Crop</button>
+
+  <h3>Canvas</h3>
+  <div class="img-container" style="width: 100px; height: 100px">
+    <canvas id="canvasContainer" style="width: 100px; height: 100px"></canvas>
+  </div>
+
+  <div id="result"></div>
+</div>
+
+<script src="../js/cropper.js"></script>
+<script src="../js/tiff.js"></script>
+<script>
+  function start() {
+    let width = this.offsetWidth;
+    let height = this.offsetHeight;
+    console.log("offsetWidth",this.offsetWidth)
+    console.log("offsetHeight",this.offsetHeight)
+
+    let cropper;
+    let result = document.getElementById('result');
+    let canvas = document.getElementById("canvasContainer");
+
+    canvas.width = width;
+    canvas.height = height;
+
+    const xhr = new XMLHttpRequest();
+    xhr.responseType = 'arraybuffer';
+    xhr.open('GET', '../../assets/images/10.TIFF');
+    // xhr.open('GET', 'https://blobemstest.blob.core.windows.net/ems-storage/voter-documents/335/Signature-637891200253411978.tif');
+    xhr.onload = (e) => {
+      const tiff = new Tiff({buffer: xhr.response});
+      const canvas = tiff.toCanvas();
+      document.body.append(canvas); // beautify!
+
+      cropper = new Cropper(canvas,{
+        movable: false,
+        zoomable: true,
+        rotatable: false,
+        scalable: false,
+        responsive:false,
+        background:true,
+        // dragMode: 'crop', // as any
+
+      });
+    };
+    xhr.send();
+    button.onclick = function () {
+      result.innerHTML = '';
+      result.appendChild(cropper.getCroppedCanvas());
+    };
+  }
+
+    window.addEventListener('DOMContentLoaded', function () {
+    start();
+
+  });
+</script>
+</body>
+</html>

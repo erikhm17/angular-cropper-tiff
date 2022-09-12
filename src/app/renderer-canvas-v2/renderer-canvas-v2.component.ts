@@ -1,7 +1,9 @@
 import {AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 
 import Cropper from "cropperjs";
-declare var Tiff: any;
+import Tiff from "tiff.js";
+
+// declare var Tiff: any;
 
 @Component({
   selector: 'app-renderer-canvas-v2',
@@ -20,7 +22,21 @@ export class RendererCanvasV2Component implements OnInit, AfterViewInit {
 
   public imageDestination: string;
   private cropper: Cropper;
-
+  public cropperOptions: Cropper.Options<HTMLCanvasElement> = {
+    autoCrop: true,
+    movable: false,
+    zoomable: true,
+    rotatable: true,
+    scalable: false,
+    center: true,
+    responsive: false,
+    background: true,
+    modal: true,
+    dragMode: 'crop', // as any,
+    ready(event: Cropper.ReadyEvent<HTMLCanvasElement>) {
+      console.log("is ready === ",event)
+    }
+  }
   constructor() {
     this.imageDestination = "";
   }
@@ -28,7 +44,13 @@ export class RendererCanvasV2Component implements OnInit, AfterViewInit {
   public ngAfterViewInit() {
     let imageSource = '../../assets/images/10.TIFF';
 
-    let button = document.getElementById('button');
+    let button = document.getElementById('onDoCrop');
+    let onStartCrop = document.getElementById('onStartCrop');
+    let onRotateLeft = document.getElementById('onRotateLeft');
+    let onRotateRight = document.getElementById('onRotateRight');
+
+
+
     let width = 400;
     let height = 250;
     let result = document.getElementById('result');
@@ -42,38 +64,36 @@ export class RendererCanvasV2Component implements OnInit, AfterViewInit {
 
     const xhr = new XMLHttpRequest();
     xhr.responseType = 'arraybuffer';
-    xhr.open('GET', imageSource);
-    // xhr.open('GET', 'https://blobemstest.blob.core.windows.net/ems-storage/voter-documents/335/Signature-637891200253411978.tif');
+    //xhr.open('GET', imageSource);
+    xhr.open('GET', 'https://blobemstest.blob.core.windows.net/ems-storage/voter-documents/335/Signature-637891200253411978.tif');
     xhr.onload = (e) => {
       const tiff = new Tiff({buffer: xhr.response});
+
       const canvas = tiff.toCanvas() as HTMLCanvasElement;
       container.append(canvas); // beautify!
       // canvas.width = 100;
       // canvas.height = 100;
-
-      this.cropper = new Cropper(canvas, {
-        movable: false,
-        zoomable: true,
-        rotatable: false,
-        scalable: false,
-        center:true,
-        responsive: false,
-        background: true,
-        modal:true,
-        dragMode: 'crop', // as any
-
-      });
+      this.cropper = new Cropper(canvas, this.cropperOptions);
     };
     xhr.send();
 
     button.onclick = () => {
       result.innerHTML = '';
-
       let canvasResult : HTMLCanvasElement= this.cropper.getCroppedCanvas();
       // canvasResult.width = 2000;
       // canvasResult.height = 2000;
       result.appendChild(canvasResult);
     };
+    onStartCrop.onclick = () =>{
+        this.cropperOptions.autoCrop = true;
+        this.cropper.reset()
+    }
+    onRotateLeft.onclick = () =>{
+      this.cropper.rotate(-90)
+    }
+    onRotateRight.onclick = () =>{
+      this.cropper.rotate(90)
+    }
   }
 
   public ngOnInit() {

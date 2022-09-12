@@ -25,9 +25,7 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": [
-              "src/assets/js/tiff.js"
-            ]
+            "scripts": []
           },
           "configurations": {
             "production": {

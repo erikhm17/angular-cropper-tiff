@@ -44,10 +44,13 @@ export class RendererCanvasV2Component implements OnInit, AfterViewInit {
   public ngAfterViewInit() {
     let imageSource = '../../assets/images/10.TIFF';
 
-    let button = document.getElementById('onDoCrop');
+    let onDoCrop = document.getElementById('onDoCrop');
     let onStartCrop = document.getElementById('onStartCrop');
     let onRotateLeft = document.getElementById('onRotateLeft');
     let onRotateRight = document.getElementById('onRotateRight');
+    let onCancel = document.getElementById('onCancel');
+    let onStop = document.getElementById('onStop ');
+    let onBox = document.getElementById('onBox ');
 
 
 
@@ -77,12 +80,13 @@ export class RendererCanvasV2Component implements OnInit, AfterViewInit {
     };
     xhr.send();
 
-    button.onclick = () => {
+    onDoCrop.onclick = () => {
       result.innerHTML = '';
       let canvasResult : HTMLCanvasElement= this.cropper.getCroppedCanvas();
       // canvasResult.width = 2000;
       // canvasResult.height = 2000;
       result.appendChild(canvasResult);
+      console.log("canvasResult",canvasResult)
     };
     onStartCrop.onclick = () =>{
         this.cropperOptions.autoCrop = true;
@@ -93,6 +97,23 @@ export class RendererCanvasV2Component implements OnInit, AfterViewInit {
     }
     onRotateRight.onclick = () =>{
       this.cropper.rotate(90)
+    }
+    onCancel.onclick = () =>{
+      this.cropper.clear()
+    }
+    onStop.onclick = () =>{
+      this.cropper.destroy()
+    }
+    onBox.onclick = () =>{
+      var canvasData = this.cropper.getCanvasData();
+      this.cropper.setCropBoxData({
+        left: 20,
+        top: 20,
+        width: 20,
+        height: 20
+      });
+
+
     }
   }
 
